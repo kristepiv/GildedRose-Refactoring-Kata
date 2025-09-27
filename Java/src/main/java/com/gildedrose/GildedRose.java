@@ -1,9 +1,22 @@
 package com.gildedrose;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 class GildedRose {
     Item[] items;
 
+    public GildedRose(){}
+
     public GildedRose(Item[] items) {
+        this.items = items;
+    }
+
+    public Item[] getItems() {
+        return items;
+    }
+
+    public void setItems(Item[] items) {
         this.items = items;
     }
 
@@ -58,5 +71,17 @@ class GildedRose {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        GildedRose that = (GildedRose) o;
+        return Objects.deepEquals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(items);
     }
 }

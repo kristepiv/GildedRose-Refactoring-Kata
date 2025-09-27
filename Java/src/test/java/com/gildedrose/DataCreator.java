@@ -1,8 +1,14 @@
 package com.gildedrose;
 
-public class TexttestFixture {
-    public static void main(String[] args) {
-        System.out.println("OMGHAI!");
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.io.File;
+import java.io.IOException;
+
+public class DataCreator {
+    public static void main(String[] args) throws IOException {
+
 
         Item[] items = new Item[] {
                 new Item("+5 Dexterity Vest", 10, 20), //
@@ -19,17 +25,13 @@ public class TexttestFixture {
         GildedRose app = new GildedRose(items);
 
         int days = 30;
-        if (args.length > 0) {
-            days = Integer.parseInt(args[0]) + 1;
-        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+
 
         for (int i = 0; i < days; i++) {
-            System.out.println("-------- day " + i + " --------");
-            System.out.println("name, sellIn, quality");
-            for (Item item : items) {
-                System.out.println(item);
-            }
-            System.out.println();
+            objectMapper.writeValue(new File("day_"+i+".json"), app);
             app.updateQuality();
         }
     }
