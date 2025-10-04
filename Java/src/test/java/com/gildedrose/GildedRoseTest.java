@@ -1,9 +1,9 @@
 package com.gildedrose;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GildedRoseTest {
+    static boolean selfFix = false;
     static ObjectMapper objectMapper =  new ObjectMapper();
 
     @Test
@@ -28,13 +29,22 @@ class GildedRoseTest {
             new Item("Conjured Mana Cake", 3, 6)
         };
         GildedRose app = new GildedRose(items);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         for (int i = 0; i < 30; i++) {
-            String stringValue = Files.readString(Paths.get(GildedRoseTest.class.getClassLoader().getResource("day_"+i+".json").getPath()), StandardCharsets.UTF_8);
+            if (selfFix) {
+                String fixedValue = objectMapper.writeValueAsString(app);
+                Files.writeString(
+                    Paths.get("src/test/resources", "day_" + i + ".json"),
+                    fixedValue);
+            }
+
+            String stringValue = Files.readString(
+                    Paths.get("src/test/resources", "day_" + i + ".json"),
+                    StandardCharsets.UTF_8);
             GildedRose expected = objectMapper.readValue(stringValue, GildedRose.class);
             assertEquals(expected, app);
             app.updateQuality();
         }
     }
-
 }
